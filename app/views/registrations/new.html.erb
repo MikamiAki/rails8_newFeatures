@@ -1,0 +1,31 @@
+<div>
+    <%= form_with model: User.new, url: registration_path do |form| %>
+        <div>
+        <%= form.label :email_address, "Email address" %>
+        <%= form.email_field :email_address, 
+            placeholder: "name@example.com",
+            required: true,
+            autocomplete: "email" %>
+        </div>
+
+        <div>
+        <%= form.label :password, "Password" %>
+        <%= form.password_field :password, 
+            placeholder: "Create a password",
+            required: true,
+            minlength: 6,
+            autocomplete: "new-password" %>
+        </div>
+
+        <div>
+        <%= form.label :password_confirmation, "Confirm password" %>
+        <%= form.password_field :password_confirmation, 
+            placeholder: "Repeat your password",
+            required: true,
+            minlength: 6,
+            autocomplete: "new-password" %>
+        </div>
+
+        <%= form.submit "Create Account" %>
+    <% end %>
+</div>
