@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql:8.0
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3306:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  web:
+    build: .
+    command: >
+      bash -c "
+      if [ ! -f /myapp/config/database.yml ]; then
+        rails new . --force --database=mysql &&
+        sed -i 's/password:/password: password/' config/database.yml &&
+        sed -i 's/host: localhost/host: db/' config/database.yml &&
+        bundle install &&
+        rails db:create;
+      fi &&
+      rm -f tmp/pids/server.pid &&
+      bundle exec rails s -p 3000 -b '0.0.0.0'
+      "
+    volumes:
+      - .:/myapp
+      - bundle_data:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: mysql2://root:password@db:3306
+    working_dir: /myapp
+
+volumes:
+  mysql_data:
+  bundle_data:
